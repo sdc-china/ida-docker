@@ -13,7 +13,7 @@ docker load --input ida-21.2.0.tar.gz
 chown -R 1001:0 data/ida
 ```
 
-### update .env file
+## update .env file
 Set the **DATA_PATH** to the absolution path of the **data** folder
 ```
 DATA_PATH=/root/ida-docker/data
