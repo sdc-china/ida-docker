@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  mysql:
+    restart: always
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: mysqladmin
+      MYSQL_DATABASE: idaweb
+    volumes:
+       - $DATA_PATH/sqls/mysql:/docker-entrypoint-initdb.d
+       - $DATA_PATH/mysql:/var/lib/mysql
+  web:
+    restart: always
+    depends_on:
+       - mysql
+    command: >
+      bash -c "sleep 10
+      && /opt/ol/wlp/bin/server run defaultServer"
+    image: ida:21.2.0
+    ports:
+      - "9443:9443"
+      - "9080:9080"
+    environment:
+      DATABASE_TYPE: mysql
+      JNDI_NAME: jdbc/ida
+      DATABASE_NAME: idaweb
+      DATABASE_SERVER_NAME: mysql
+      DATABASE_PORT_NUMBER: 3306
+      DATABASE_USER: root
+      DATABASE_PASSWORD: mysqladmin
+    volumes:
+       - $DATA_PATH/ida:/var/ida/data
+
+  hub:
+    image: selenium/hub
+    environment:
+      GRID_MAX_SESSION: 20
+      GRID_BROWSER_TIMEOUT: 120
+      GRID_TIMEOUT: 60
+
+  chrome:
+    image: selenium/node-chrome
+    depends_on:
+      - hub
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+      HUB_PORT_4444_TCP_PORT: 4444
+      NODE_MAX_SESSION: 1
+      NODE_MAX_INSTANCES: 1
+    links:
+      - hub
+
+  firefox:
+    image: selenium/node-firefox
+    depends_on:
+      - hub
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+      HUB_PORT_4444_TCP_PORT: 4444
+      NODE_MAX_SESSION: 1
+      NODE_MAX_INSTANCES: 1
+    links:
+      - hub
