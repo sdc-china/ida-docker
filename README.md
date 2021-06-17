@@ -16,6 +16,7 @@ chown -R 1001:0 data/ida
 
 ## update .env file
 Set the **DATA_PATH** to the absolution path of the **data** folder
+
 ```
 DATA_PATH=/root/ida-docker/data
 ```
@@ -31,16 +32,18 @@ docker-compose logs -f web
 ```
 
 ## Access IDA
-You can access IDA by the url https://localhost:9443/ida, until you see the below logs
+You can access IDA by the url [https://localhost:9443/ida](https://localhost:9443/ida), until you see the below logs.
+
 ```
 The defaultServer server started in xx seconds.
 ```
+
 Default Admin Credentials: idaAdmin/idaAdmin
 
 ## Configure BPM Server
-https://sdc-china.github.io/IDA-doc/administration/administration-bpm-configuration.html
+[https://sdc-china.github.io/IDA-doc/administration/administration-bpm-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-bpm-configuration.html)
 
 ## Configure Standalone Selenium Grid Server
-https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html
+[https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html)
 
-Selenium Server URL: http://hub:4444/wd/hub
+Selenium Server URL: [http://hub:4444/wd/hub](http://hub:4444/wd/hub)
