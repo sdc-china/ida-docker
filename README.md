@@ -31,6 +31,16 @@ docker-compose up -d
 docker-compose logs -f web
 ```
 
+## Stop IDA web
+```
+docker-compose stop web
+```
+
+## Stop all components
+```
+docker-compose down
+```
+
 ## Access IDA
 You can access IDA by the url [https://localhost:9443/ida](https://localhost:9443/ida), until you see the below logs.
 
