@@ -5,8 +5,8 @@ git clone git@github.com:sdc-china/ida-docker.git
 
 ## Load IDA docker image
 ```
-tar -zxvf ida-21.2.0.tgz
-docker load --input images/ida-21.2.0.tar.gz
+tar -zxvf ida-21.2.1.tgz
+docker load --input images/ida-21.2.1.tar.gz
 ```
 
 ## Set IDA data folder permission
