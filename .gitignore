@@ -1,1 +1,13 @@
 data/mysql
+data/ida/analyzer
+data/ida/attachments
+data/ida/avatar
+data/ida/bpmcheckstyle
+data/ida/bpmcomparison
+data/ida/gatling
+data/ida/installationpackages
+data/ida/logs
+data/ida/screenshots
+data/ida/search
+data/ida/temp
+data/ida/twx

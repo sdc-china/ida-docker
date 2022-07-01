@@ -5,8 +5,8 @@ git clone git@github.com:sdc-china/ida-docker.git
 
 ## Load IDA docker image
 ```
-tar -zxvf ida-21.2.1.tgz
-docker load --input images/ida-21.2.1.tar.gz
+tar -zxvf ida-22.1.3.tgz
+docker load --input images/ida-22.1.3.tar.gz
 ```
 
 ## Set IDA data folder permission
@@ -56,4 +56,4 @@ Default Admin Credentials: idaAdmin/idaAdmin
 ## Configure Standalone Selenium Grid Server
 [https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html)
 
-Selenium Server URL: [http://hub:4444/wd/hub](http://hub:4444/wd/hub)
+Selenium Server URL: [http://hub:4444](http://hub:4444)
