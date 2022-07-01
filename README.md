@@ -5,7 +5,7 @@ cd ida-docker
 ```
 
 ## Load IDA docker image
-ida-22.1.3.tgz is in provided in the IDA release package.
+ida-22.1.3.tgz is provided in the IDA release package.
 ```
 tar -zxvf ida-22.1.3.tgz
 docker load --input images/ida-22.1.3.tar.gz
