@@ -44,7 +44,7 @@ docker-compose down
 ```
 
 ## Access IDA
-You can access IDA by the url [https://localhost:9443/ida](https://localhost:9443/ida), until you see the below logs.
+You can access IDA by the url https://<HOST_IP>:9443/ida, until you see the below logs.
 
 ```
 The defaultServer server started in xx seconds.
@@ -58,4 +58,4 @@ Default Admin Credentials: idaAdmin/idaAdmin
 ## Configure Standalone Selenium Grid Server
 [https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html)
 
-Selenium Server URL: [http://hub:4444](http://hub:4444)
+Selenium Server URL: http://<HOST_IP>:4444
