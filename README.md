@@ -1,9 +1,11 @@
 ## Download docker compose scripts
 ```
-git clone git@github.com:sdc-china/ida-docker.git
+git clone https://github.com/sdc-china/ida-docker.git
+cd ida-docker
 ```
 
 ## Load IDA docker image
+ida-22.1.3.tgz is in provided in the IDA release package.
 ```
 tar -zxvf ida-22.1.3.tgz
 docker load --input images/ida-22.1.3.tar.gz
