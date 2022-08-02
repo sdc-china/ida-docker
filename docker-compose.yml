@@ -25,10 +25,10 @@ services:
     command: >
       bash -c "sleep 10
       && /opt/ol/wlp/bin/server run defaultServer"
-    image: ida:22.1.3
+    image: ida:22.1.4
     ports:
-      - "9443:9443"
-      - "9080:9080"
+      - "9449:9449"
+      - "9089:9089"
     environment:
       DATABASE_TYPE: postgres
       JNDI_NAME: jdbc/ida
