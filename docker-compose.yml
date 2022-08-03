@@ -27,8 +27,8 @@ services:
       && /opt/ol/wlp/bin/server run defaultServer"
     image: ida:22.1.4
     ports:
-      - "9449:9449"
-      - "9089:9089"
+      - "9443:9443"
+      - "9080:9080"
     environment:
       DATABASE_TYPE: postgres
       JNDI_NAME: jdbc/ida
