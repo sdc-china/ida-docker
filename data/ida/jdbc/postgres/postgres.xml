@@ -1,0 +1,9 @@
+<server>
+        <!-- Configure attributes for the data source, such as JDBC vendor properties and connection pooling properties. For example:  -->
+        <dataSource jndiName="${env.JNDI_NAME}">
+          <connectionManager maxPoolSize="${env.DATABASE_MAX_POOL_SIZE}"/>
+      <jdbcDriver libraryRef="DBLib" />
+      <properties.postgresql serverName="${env.DATABASE_SERVER_NAME}" portNumber="${env.DATABASE_PORT_NUMBER}" 
+        databaseName="${env.DATABASE_NAME}" user="${env.DATABASE_USER}" password="${env.DATABASE_PASSWORD}" />
+    </dataSource>
+</server>

@@ -88,6 +88,7 @@ CREATE TABLE "selenium_grid_config" (
     "grid_timeout" character varying(8),
     "selenium_grid_server_name" character varying(50) NOT NULL,
     "selenium_grid_url" character varying(1024) NOT NULL,
+    "selenium_grid_internal_url" character varying(1024),
     "organization_id" bigint,
     "selenium_grid_options" character varying(1024),
     "version" character varying(30),
@@ -122,6 +123,7 @@ CREATE TABLE "bpm_config" (
     "server_url" character varying(255) NOT NULL,
     "cpe_server_url" character varying(255),
     "cc_server_url" character varying(255),
+    "app_server_url" character varying(255),
     "soap_port" character varying(30),
     "server_type" character varying(20) NOT NULL,
     "was_admin_user_name" character varying(100),
@@ -275,7 +277,7 @@ CREATE TABLE "test_case" (
     "id" integer DEFAULT nextval('test_case_id_seq') NOT NULL,
     "case_name" character varying(100) NOT NULL,
     "case_type" character varying(10) NOT NULL,
-    "case_description" text,
+    "case_description" character varying(4000),
     "creation_date" timestamp,
     "exec_status" character varying(20),
     "exec_error_message" text,
@@ -475,7 +477,7 @@ CREATE TABLE "test_case_info" (
     "duration" character varying(10),
     "end_date" timestamp,
     "exec_status" character varying(10),
-    "case_name" character varying(100),
+    "case_name" character varying(512),
     "start_date" timestamp,
     "test_case_id" bigint,
     "case_solution_data_id" bigint,
@@ -507,6 +509,7 @@ CREATE TABLE "test_step_info" (
     "screenshot_path" character varying(255),
     "test_case_info_id" bigint,
     "duration" character varying(10),
+    "test_result" text,
     CONSTRAINT "test_step_info_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -549,6 +552,7 @@ CREATE TABLE "human_task_data" (
     "task_name" character varying(255),
     "task_type" character varying(50),
     "process_instance_data_id" bigint,
+    "task_index" integer,
     CONSTRAINT "human_task_data_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -578,6 +582,8 @@ CREATE TABLE "pipeline" (
     "schedule_type" character varying(30),
     "trigger_by_snapshot" boolean,
     "trigger_by_time" boolean,
+    "schedule_start_time" timestamp,
+    "schedule_end_time" timestamp,
     "update_date" timestamp,
     "creator_id" bigint,
     "team_id" bigint,
@@ -614,7 +620,14 @@ CREATE TABLE "stage" (
     "bpm_configuration_id" bigint,
     "pipeline_id" bigint,
     "subpipeline_id" bigint,
+    "approval_required" boolean,
     CONSTRAINT "stage_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE TABLE "pipeline_stage_approvers" (
+    "stage_id" bigint NOT NULL,
+    "user_id" bigint NOT NULL,
+    CONSTRAINT "pipeline_stage_approvers_pkey" PRIMARY KEY ("stage_id", "user_id")
 ) WITH (oids = false);
 
 CREATE SEQUENCE pipeline_step_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -625,6 +638,7 @@ CREATE TABLE "pipeline_step" (
     "pipeline_step_index" integer,
     "name" character varying(100) NOT NULL,
     "stage_id" bigint,
+    "halt_on_failure" boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT "pipeline_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -669,6 +683,7 @@ CREATE TABLE "deployment_step" (
     "deploy_from_local_file_system" boolean,
     "ignore_validation_error" boolean NOT NULL,
     "migrate_instances" boolean NOT NULL,
+    "custom_policy" boolean NOT NULL,
     "offline_install" boolean NOT NULL,
     "sync_envs" boolean NOT NULL,
     "sync_epvs" boolean NOT NULL,
@@ -692,25 +707,47 @@ CREATE TABLE "build" (
     "name" character varying(50) NOT NULL,
     "start_date" timestamp NOT NULL,
     "status" character varying(10),
+    "status_description" character varying(1024),
     "triggering_snapshot_acronym" character varying(50),
     "pipeline_id" bigint,
     "trigger_by" bigint,
+    "rest_input" text,
+    "exec_params" text,
+    "post_script" text,
+    "error_script" text,
     CONSTRAINT "build_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE SEQUENCE build_stage_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 CREATE TABLE "build_stage" (
     "id" integer DEFAULT nextval('build_stage_id_seq') NOT NULL,
+    "branch_id" character varying(50),
     "branch_name" character varying(255),
     "stage_index" integer,
+    "build_stage_index" integer,
     "name" character varying(100) NOT NULL,
+    "process_app_id" character varying(50),
     "process_app_acronym" character varying(50),
+    "bpm_configuration_id" bigint,
     "server_name" character varying(255),
+    "snapshot_id" character varying(50),
     "snapshot_acronym" character varying(50),
     "stage_type" character varying(10) NOT NULL,
     "build_id" bigint,
     "subpipeline_id" bigint,
+    "status" character varying(10),
+    "toolkit" boolean,
+    "approval_required" boolean,
+    "approver_id" bigint,
+    "rejecter_id" bigint,
+    "comment_val" character varying(512),
     CONSTRAINT "build_stage_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE TABLE "pipeline_build_stage_approvers" (
+    "build_stage_id" bigint NOT NULL,
+    "user_id" bigint NOT NULL,
+    CONSTRAINT "pipeline_build_stage_approvers_pkey" PRIMARY KEY ("build_stage_id", "user_id")
 ) WITH (oids = false);
 
 CREATE SEQUENCE build_step_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -725,12 +762,21 @@ CREATE TABLE "build_step" (
     "start_date" timestamp,
     "status" character varying(10) NOT NULL,
     "stage_id" bigint,
+    "halt_on_failure" boolean NOT NULL DEFAULT TRUE,
+    "resumer_id" bigint,
+    "comment_val" character varying(512),
     CONSTRAINT "build_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE TABLE "test_build_step" (
     "id" bigint NOT NULL,
     "test_result_id" bigint,
+    "exclude_test_cases" boolean NOT NULL,
+    "is_tip" boolean NOT NULL,
+    "selected_selenium_hub_ids" character varying(1024),
+    "selected_test_case_ids" character varying(1024),
+    "selected_test_case_labels" character varying(1024),
+    "project_id" bigint,
     CONSTRAINT "test_build_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -738,16 +784,24 @@ CREATE TABLE "snapshot_build_step" (
     "id" bigint NOT NULL,
     "bpm_snapshot_id" character varying(50),
     "bpm_snapshot_name" character varying(255),
+    "naming_convention" character varying(100) NOT NULL,
     CONSTRAINT "snapshot_build_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE TABLE "update_dependency_build_step" (
     "id" bigint NOT NULL,
+    "toolkit_id" character varying(50) NOT NULL,
     CONSTRAINT "update_dependency_build_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE TABLE "checkstyle_build_step" (
     "id" bigint NOT NULL,
+    "health_score_threshold" integer NOT NULL,
+    "ignore_doc_check" boolean NOT NULL,
+    "ignore_js_check" boolean NOT NULL,
+    "ignore_toolkits_check" boolean NOT NULL,
+    "is_tip" boolean NOT NULL,
+    "warnings_threshold" integer NOT NULL,
     "artifacts" integer,
     "report_data" text,
     "report_folder" character varying(255),
@@ -758,8 +812,19 @@ CREATE TABLE "checkstyle_build_step" (
 
 CREATE TABLE "deployment_build_step" (
     "id" bigint NOT NULL,
+    "clean_old_snapshots" boolean NOT NULL,
+    "deploy_from_local_file_system" boolean,
+    "ignore_validation_error" boolean NOT NULL,
+    "migrate_instances" boolean NOT NULL,
+    "custom_policy" boolean NOT NULL,
+    "offline_install" boolean NOT NULL,
+    "sync_envs" boolean NOT NULL,
+    "sync_epvs" boolean NOT NULL,
+    "sync_teams" boolean NOT NULL,
+    "twx_path" character varying(255),
     "install_file_path" character varying(255),
     "migration_policy_file_path" character varying(255),
+    "previous_default_snapshot_acronym" character varying(50),
     CONSTRAINT "deployment_build_step_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -794,7 +859,22 @@ CREATE TABLE "case_step_image_compare" (
     "source_image_path" character varying(255),
     "test_case_id" bigint,
     "case_step_id" bigint,
-    CONSTRAINT "case_step_image_compare_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "case_step_image_compare_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "case_step_image_compare_unique" UNIQUE ("test_case_id","case_step_id")
+) WITH (oids = false);
+
+CREATE SEQUENCE pipeline_email_notification_config_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+CREATE TABLE "pipeline_email_notification_config" (
+    "id" integer DEFAULT nextval('pipeline_email_notification_config_id_seq') NOT NULL,
+    "enabled" boolean,
+    "config_type" character varying(10) NOT NULL,
+    "subject" character varying(255) NOT NULL,
+    "to_recipients" character varying(1024),
+    "cc" character varying(255),
+    "bcc" character varying(255),
+    "message" text NOT NULL,
+    "pipeline_id" bigint,
+    CONSTRAINT "pipeline_email_notification_config_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 ALTER TABLE ONLY "bpm_config" ADD CONSTRAINT "fk_bpm_config_organization_id" FOREIGN KEY (organization_id) REFERENCES organization(id) NOT DEFERRABLE;
@@ -807,8 +887,12 @@ ALTER TABLE ONLY "build" ADD CONSTRAINT "fk_build_trigger_by" FOREIGN KEY (trigg
 
 ALTER TABLE ONLY "build_stage" ADD CONSTRAINT "fk_build_stage_build_id" FOREIGN KEY (build_id) REFERENCES build(id) NOT DEFERRABLE;
 ALTER TABLE ONLY "build_stage" ADD CONSTRAINT "fk_build_stage_subpipeline_id" FOREIGN KEY (subpipeline_id) REFERENCES pipeline(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "build_stage" ADD CONSTRAINT "fk_build_stage_bpm_configuration_id" FOREIGN KEY (bpm_configuration_id) REFERENCES bpm_config(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "build_stage" ADD CONSTRAINT "fk_build_stage_approver_id" FOREIGN KEY (approver_id) REFERENCES ida_user(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "build_stage" ADD CONSTRAINT "fk_build_stage_rejecter_id" FOREIGN KEY (rejecter_id) REFERENCES ida_user(id) NOT DEFERRABLE;
 
 ALTER TABLE ONLY "build_step" ADD CONSTRAINT "fk_build_step_stage_id" FOREIGN KEY (stage_id) REFERENCES build_stage(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "build_step" ADD CONSTRAINT "fk_build_step_resumer_id" FOREIGN KEY (resumer_id) REFERENCES ida_user(id) NOT DEFERRABLE;
 
 ALTER TABLE ONLY "case_activity_data" ADD CONSTRAINT "fk_case_activity_data_case_solution_data_id" FOREIGN KEY (case_solution_data_id) REFERENCES case_solution_data(id) NOT DEFERRABLE;
 
@@ -913,6 +997,7 @@ ALTER TABLE ONLY "teams_users" ADD CONSTRAINT "fk_teams_users_user_id" FOREIGN K
 
 ALTER TABLE ONLY "test_build_step" ADD CONSTRAINT "fk_test_build_step_id" FOREIGN KEY (id) REFERENCES build_step(id) NOT DEFERRABLE;
 ALTER TABLE ONLY "test_build_step" ADD CONSTRAINT "fk_test_build_step_test_result_id" FOREIGN KEY (test_result_id) REFERENCES test_result(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "test_build_step" ADD CONSTRAINT "fk_test_build_step_project_id" FOREIGN KEY (project_id) REFERENCES project(id) NOT DEFERRABLE;
 
 ALTER TABLE ONLY "test_case" ADD CONSTRAINT "fk_test_case_creator_id" FOREIGN KEY (creator_id) REFERENCES ida_user(id) NOT DEFERRABLE;
 ALTER TABLE ONLY "test_case" ADD CONSTRAINT "fk_test_case_editor_id" FOREIGN KEY (editor_id) REFERENCES ida_user(id) NOT DEFERRABLE;
@@ -958,6 +1043,12 @@ ALTER TABLE ONLY "users_projects" ADD CONSTRAINT "fk_users_projects_user_id" FOR
 
 ALTER TABLE ONLY "users_roles" ADD CONSTRAINT "fk_users_roles_role_id" FOREIGN KEY (role_id) REFERENCES role(id) NOT DEFERRABLE;
 ALTER TABLE ONLY "users_roles" ADD CONSTRAINT "fk_users_roles_user_id" FOREIGN KEY (user_id) REFERENCES ida_user(id) NOT DEFERRABLE;
+
+ALTER TABLE ONLY "pipeline_stage_approvers" ADD CONSTRAINT "fk_pipeline_stage_approvers_stage_id" FOREIGN KEY (stage_id) REFERENCES stage(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "pipeline_stage_approvers" ADD CONSTRAINT "fk_pipeline_stage_approvers_user_id" FOREIGN KEY (user_id) REFERENCES ida_user(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "pipeline_build_stage_approvers" ADD CONSTRAINT "fk_pipeline_build_stage_approvers_build_stage_id" FOREIGN KEY (build_stage_id) REFERENCES build_stage(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "pipeline_build_stage_approvers" ADD CONSTRAINT "fk_pipeline_build_stage_approvers_user_id" FOREIGN KEY (user_id) REFERENCES ida_user(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "pipeline_email_notification_config" ADD CONSTRAINT "fk_email_pipeline_id" FOREIGN KEY (pipeline_id) REFERENCES pipeline(id) NOT DEFERRABLE;
 
 CREATE INDEX BUILD_PIPELINE_ID_IDX ON BUILD (PIPELINE_ID);
 CREATE INDEX BUILD_STAGE_BUILD_ID_IDX ON BUILD_STAGE (BUILD_ID);
@@ -1161,3 +1252,9 @@ CREATE INDEX IDX_QRTZ_FT_T_G
   ON QRTZ_FIRED_TRIGGERS (SCHED_NAME, TRIGGER_NAME, TRIGGER_GROUP);
 CREATE INDEX IDX_QRTZ_FT_TG
   ON QRTZ_FIRED_TRIGGERS (SCHED_NAME, TRIGGER_GROUP);
+  
+CREATE INDEX CASE_STEP_TEST_CASE_ID_IDX ON CASE_STEP (TEST_CASE_ID);
+CREATE INDEX CASE_STEP_GROUP_COMMAND_ID_IDX ON CASE_STEP (GROUP_COMMAND_ID);
+CREATE INDEX CASE_STEP_COMMAND_ID_IDX ON CASE_STEP (COMMAND_ID);
+CREATE INDEX CASE_STEP_BPM_USER_ID_IDX ON CASE_STEP (BPM_USER_ID);
+CREATE INDEX TEST_CASE_PROJECT_ID_IDX ON TEST_CASE (PROJECT_ID);

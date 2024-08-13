@@ -35,7 +35,8 @@ VALUES
 ('pipeline', 'P_RUN_DEPLOY','Run Deployment Pipeline(with script/snapshot/deployment steps)'),
 ('pipeline', 'P_MANAGE_TEMPLATE','Create/Delete pipeline template'),
 ('CleanDiskCache', 'CLEAN_VIEW','View Clean Disk Cache'),
-('CleanDiskCache', 'CLEAN_ALL','View/Operation Clean Disk Cache');
+('CleanDiskCache', 'CLEAN_ALL','View/Operation Clean Disk Cache'),
+('Configuration', 'CONF_MIGRATE_DB','View/Migrate Database Schema');
 
 INSERT INTO roles_permissions (role_id, permission_id)
 VALUES
@@ -64,6 +65,7 @@ VALUES
 ((SELECT id FROM role where name = 'Admin'), (SELECT id FROM permission where operation = 'CLEAN_VIEW')),
 ((SELECT id FROM role where name = 'Admin'), (SELECT id FROM permission where operation = 'CLEAN_ALL')),
 ((SELECT id FROM role where name = 'Admin'), (SELECT id FROM permission where operation = 'CONF_SSHKEY_ALL')),
+((SELECT id FROM role where name = 'Admin'), (SELECT id FROM permission where operation = 'CONF_MIGRATE_DB')),
 ((SELECT id FROM role where name = 'User'), (SELECT id FROM permission where operation = 'OT_SNAPSHOT')),
 ((SELECT id FROM role where name = 'User'), (SELECT id FROM permission where operation = 'T_VIEW')),
 ((SELECT id FROM role where name = 'User'), (SELECT id FROM permission where operation = 'T_EDIT')),
