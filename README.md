@@ -1,5 +1,5 @@
 ## Overview
-IBM Deployment Accelerator for Business Automation Workflow(IDA) is a lightweigt solution for Workflow project development, testing and ops team to apply DevOps to BAW Workflow project. This github repostiroy provides the scripts to setup IDA by docker compose. All scripts are tested in Linux.
+IBM Deployment Accelerator for Business Automation Workflow(IDA) is a lightweigt solution for Workflow project development, testing and ops team to apply DevOps to BAW Workflow project. This github repostiroy provides the scripts to setup IDA with PostgreSql and Selenium Grid by docker compose. All scripts are tested in Linux.
 
 ## Load IDA docker image
 ida-24.0.6.tgz is provided in the IDA release package.
