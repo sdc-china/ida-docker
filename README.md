@@ -61,7 +61,7 @@ The defaultServer server started in xx seconds.
 Default Admin Credentials: idaAdmin/idaAdmin
 
 ## Configure BPM Server
-[https://sdc-china.github.io/IDA-doc/administration/administration-bpm-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-bpm-configuration.html)
+[https://sdc-china.github.io/IDA-doc/administration/administration-baw-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-baw-configuration.html)
 
 ## Configure Standalone Selenium Grid Server
 [https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html](https://sdc-china.github.io/IDA-doc/administration/administration-selenium-hub-configuration.html)
