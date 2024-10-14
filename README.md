@@ -19,6 +19,13 @@ cd ida-docker
 chown -R 1001:0 data/ida
 ```
 
+## update .env file
+Set the **DATA_PATH** to the absolution path of the **data** folder
+
+```
+DATA_PATH=$(realpath data)
+```
+
 ## Start IDA
 ```
 docker-compose up -d
