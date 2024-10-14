@@ -46,6 +46,11 @@ docker-compose stop web
 docker-compose down
 ```
 
+## Stop all components with DB volume removed
+```
+docker-compose down -v
+```
+
 ## Access IDA
 You can access IDA by the url https://<HOST_IP>:9443/ida, until you see the below logs.
 
