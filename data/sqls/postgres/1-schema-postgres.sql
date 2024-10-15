@@ -39,7 +39,8 @@ CREATE TABLE "team" (
     "description" character varying(255),
     "team_name" character varying(50) NOT NULL,
     "organization_id" bigint,
-    CONSTRAINT "team_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "team_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "team_unique" UNIQUE ("team_name")
 ) WITH (oids = false);
 
 CREATE SEQUENCE ida_user_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 2 CACHE 1;
@@ -53,6 +54,7 @@ CREATE TABLE "ida_user" (
     "user_name" character varying(50) NOT NULL,
     "user_source" character varying(255),
     "organization_id" bigint,
+    CONSTRAINT "ida_user_unique" UNIQUE ("user_name"),
     CONSTRAINT "ida_user_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -92,7 +94,8 @@ CREATE TABLE "selenium_grid_config" (
     "organization_id" bigint,
     "selenium_grid_options" character varying(1024),
     "version" character varying(30),
-    CONSTRAINT "selenium_grid_config_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "selenium_grid_config_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "selenium_grid_config_unique" UNIQUE ("selenium_grid_server_name")
 ) WITH (oids = false);
 
 CREATE TABLE "teams_seleniumgrids" (
@@ -137,6 +140,7 @@ CREATE TABLE "bpm_config" (
     "ops_doc" text,
 	"auth_command" character varying(255),
 	"auth_method" character varying(50),
+	CONSTRAINT "bpm_config_unique" UNIQUE ("bpm_config_name"),
     CONSTRAINT "bpm_config_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -334,6 +338,7 @@ CREATE TABLE "command" (
     "verbalization" character varying(255),
     "category_id" bigint,
     "creator_id" bigint,
+    "updater_id" bigint,
     "project_id" bigint,
     "takescreenshot" boolean NOT NULL,
     "execution_type" character varying(20),
@@ -375,6 +380,7 @@ CREATE TABLE "test_case_history" (
     "version" integer NOT NULL,
     "creator_id" bigint,
     "test_case_id" bigint,
+    "change_reason" character varying(255),
     CONSTRAINT "test_case_history_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -535,6 +541,8 @@ CREATE TABLE "svg" (
     "svg_name" character varying(255),
     "svg_type" character varying(50),
     "artifact_data_id" bigint,
+    "unique_parent_node_name" character varying(255),
+    "instance_id" character varying(50),
     CONSTRAINT "svg_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 

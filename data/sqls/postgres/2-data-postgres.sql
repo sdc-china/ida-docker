@@ -12,7 +12,7 @@ INSERT INTO permission (resource_name, operation, description)
 VALUES
 ('Testing', 'T_VIEW', 'View/Export Test Project'),
 ('Testing', 'T_EDIT','Create/Edit/Synchronize/Delete/Run Test Project'),
-('Testing', 'T_CUSTOM','Custom Record/Logging Configuration/Custom Java Command'),
+('Testing', 'T_CUSTOM','Custom Record/Custom Java Command'),
 ('Checkstyle', 'CS_ALL','View/Run Checkstyle'),
 ('CodeReview', 'CR_ALL','View/Run CodeReview'),
 ('OperationsTool', 'OT_SNAPSHOT','View/Run Clean Snapshot'),

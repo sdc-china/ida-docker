@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   pg_data:
 
@@ -25,7 +23,7 @@ services:
     command: >
       bash -c "sleep 10
       && /opt/ol/wlp/bin/server run defaultServer"
-    image: ida:24.0.6
+    image: ida:24.0.8.1
     ports:
       - "9443:9443"
       - "9080:9080"
