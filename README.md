@@ -64,6 +64,8 @@ docker-compose down -v
 
 ## Access IDA
 
+Step 1. Access IDA
+
 You can access IDA by the url https://<HOST_IP>:9443/ida, until you see the below logs.
 
 ```
@@ -71,6 +73,19 @@ The defaultServer server started in xx seconds.
 ```
 
 Default Admin Credentials: idaAdmin/idaAdmin
+
+
+Step 2. Create Database Tables
+
+Please refer to IDA doc: https://sdc-china.github.io/IDA-doc/installation/installation-database-installation-and-configuration.html
+
+Step 3. Restart IDA 
+
+```
+docker-compose restart web
+```
+
+After IDA restart, please follow **Step 1** to access IDA.
 
 ## Configure BPM Server
 
