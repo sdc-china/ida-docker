@@ -22,7 +22,7 @@ services:
     command: >
       bash -c "sleep 10
       && /opt/ol/wlp/bin/server run defaultServer"
-    image: ida:24.0.8.1
+    image: ida:24.0.10
     ports:
       - "9443:9443"
       - "9080:9080"
@@ -41,7 +41,7 @@ services:
       - $DATA_PATH/ida/jdbc/postgres/postgres.xml:/opt/ol/wlp/usr/servers/defaultServer/postgres.xml
 
   hub:
-    image: selenium/hub:3.141.59-palladium
+    image: selenium/hub:3.141.59
     ports:
       - "4444:4444"
     environment:
@@ -50,7 +50,7 @@ services:
       GRID_TIMEOUT: 60
 
   chrome:
-    image: selenium/node-chrome:3.141.59-palladium
+    image: selenium/node-chrome:3.141.59
     depends_on:
       - hub
     environment:
@@ -62,7 +62,7 @@ services:
       - hub
 
   firefox:
-    image: selenium/node-firefox:3.141.59-palladium
+    image: selenium/node-firefox:3.141.59
     depends_on:
       - hub
     environment:
