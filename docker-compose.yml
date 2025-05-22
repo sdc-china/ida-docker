@@ -22,7 +22,7 @@ services:
     command: >
       bash -c "sleep 10
       && /opt/ol/wlp/bin/server run defaultServer"
-    image: ida:25.0.4-java17
+    image: ida:25.0.5-java17
     ports:
       - "9443:9443"
       - "9080:9080"
