@@ -4,11 +4,11 @@ IBM Deployment Accelerator for Business Automation Workflow(IDA) is a lightweigt
 
 ## Load IDA docker image
 
-ida-25.0.7-java17.tgz is provided in the IDA release package.
+ida-25.0.8-java17.tgz is provided in the IDA release package.
 
 ```
-tar -zxvf ida-25.0.7-java17.tgz
-docker load --input images/ida-25.0.7-java17.tar.gz
+tar -zxvf ida-25.0.8-java17.tgz
+docker load --input images/ida-25.0.8-java17.tar.gz
 ```
 
 ## Download docker compose scripts

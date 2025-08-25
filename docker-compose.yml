@@ -20,7 +20,7 @@ services:
     depends_on:
       - postgres
     entrypoint: [ "bash", "-c", "sleep 10 && /opt/ol/helpers/runtime/docker-server.sh /opt/ol/wlp/bin/server run defaultServer" ]
-    image: ida:25.0.7-java17
+    image: ida:25.0.8-java17
     ports:
       - "9443:9443"
       - "9080:9080"
